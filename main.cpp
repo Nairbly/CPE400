@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include "string.h"
 
+//Ben and Brian
+
 using namespace std;
 
 struct AdjacentListNode{
@@ -36,7 +38,6 @@ private:
 	int Propagation_delay;
 	int Processing_delay;
 	int Transmission_delay;
-	string fileName;
 };
 
 struct AdjacentListNode* newAdjacentListNode(char neighbor, int distance){
