@@ -1,0 +1,7 @@
+git add <file> <file> <file>
+git commit -m "<comment>"
+git push
+
+make pull request on github
+
+git pull - this is used to download updated files
