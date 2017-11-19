@@ -10,6 +10,7 @@ using namespace std;
 
 struct AdjacentListNode{
 
+	char nodeName;
 	char neighbor;
 	int distance;
 	struct AdjacentListNode* next;
@@ -18,7 +19,7 @@ struct AdjacentListNode{
 
 struct AdjacentList{
 
-	struct AdjacentListNode *head;
+	struct AdjacentListNode *headPtr;
 
 };
 
@@ -31,7 +32,8 @@ struct Graph{
 
 class Config{
 public:
-	void readConfig(Graph*);
+	void readConfig(Graph*&);
+
 private:
 	char algorithmName;
 	int Queue_delay;
@@ -40,18 +42,44 @@ private:
 	int Transmission_delay;
 };
 
-struct AdjacentListNode* newAdjacentListNode(char neighbor, int distance){
+AdjacentListNode* nameAdjacentListNode(char);
+AdjacentListNode* newAdjacentListNode(char, int);
+Graph* createGraph(int);
+void addEdge(struct Graph*&, char, char, int);
+void printGraph(struct Graph*);
 
-	struct AdjacentListNode* newNode = (AdjacentListNode*) malloc(sizeof(AdjacentListNode));
+int main(){
+
+	Graph* graph;
+
+	Config Save;
+
+	Save.readConfig(graph);
+
+    printGraph(graph);
+
+
+}
+
+AdjacentListNode* nameAdjacentListNode(char input){
+
+	AdjacentListNode* newNode = (AdjacentListNode*) malloc(sizeof(AdjacentListNode));
+	newNode->nodeName = input;
+
+}
+
+AdjacentListNode* newAdjacentListNode(char neighbor, int distance){
+
+	AdjacentListNode* newNode = (AdjacentListNode*) malloc(sizeof(AdjacentListNode));
 	newNode->neighbor = neighbor;
 	newNode->distance = distance;
 	newNode->next = NULL;
 
 }
 
-struct Graph* createGraph(int numberOfVertices){
+Graph* createGraph(int numberOfVertices){
 
-	struct Graph* graph = (Graph*) malloc(sizeof(Graph));
+	Graph* graph = (Graph*) malloc(sizeof(Graph));
 	graph->numberOfVertices = numberOfVertices;
 
 	graph->array = (struct AdjacentList*) malloc(numberOfVertices * sizeof(struct AdjacentList));
@@ -59,59 +87,67 @@ struct Graph* createGraph(int numberOfVertices){
 	int index;
 	for (int index = 0 ; index < numberOfVertices ; index++)
 	{
-		graph->array[index].head = NULL;
+		graph->array[index].headPtr = NULL;
 	}
 
 	return graph;
 }
 
-void addEdge(struct Graph* graph, char source, char neighbor, int distance){
+void addEdge(struct Graph*& graph, char source, char neighbor, int distance){
 
     AdjacentListNode* newNode = newAdjacentListNode(neighbor, distance);
     int saveLocation;
     bool done = 0;
+
     for (int i = 0; i < graph->numberOfVertices; i++)
     {
-    	cout << "huh" << endl;
-    	if (graph->array[i].head->neighbor == source)
+    	if (graph->array[i].headPtr->nodeName == source)
     	{
     		saveLocation = i;
     		break;
     	}
     }
-    cout << "LUL" << endl;
-    AdjacentListNode* pointer = graph->array[saveLocation].head;
-    do{
-    	cout << "fuck2" << endl;
-    	if (pointer->next == NULL)
-    	{
-    		cout << "fuck3" << endl;
-    		pointer->next = newNode;
-    		done = 1;
-    	}
-    	cout << "fuck4" << endl;
-		pointer = pointer->next;
-		cout << "fuck5" << endl;
-    }while(pointer->next != NULL || done != 1);
+
+    AdjacentListNode* pointer = graph->array[saveLocation].headPtr;
+
+    if (pointer == NULL)
+    {
+    	pointer = newNode;
+    }
+
+    else
+    {
+	    while (pointer->next != NULL)
+	    {
+	    	pointer = pointer->next;
+	    }    	
+	    pointer->next = newNode;
+    }
+
 }
 
 void printGraph(struct Graph* graph)
 {
     int vertex;
-    for (vertex = 0; vertex < graph->numberOfVertices; ++vertex)
+
+    for (vertex = 0; vertex < graph->numberOfVertices; vertex++)
     {
-        struct AdjacentListNode* graphOutput = graph->array[vertex].head;
-        cout << endl << "Adjacency list of vertex " << vertex << endl << "head";
-        while (graphOutput)
+        struct AdjacentListNode* graphOutput = graph->array[vertex].headPtr;
+        
+        cout << endl << "Adjacency list of vertex " << graph->array[vertex].headPtr->nodeName << endl << "head";
+        
+        graphOutput = graphOutput->next;
+
+        while (graphOutput != NULL)
         {
-            cout << "->" << graphOutput->neighbor;
+            cout << " -> " << graphOutput->neighbor;
             graphOutput = graphOutput->next;
         }
         cout << endl;
     }
 }
 
-void Config::readConfig(Graph* graph)
+void Config::readConfig(Graph*& graph)
 {
 
 	ifstream fileIn;
@@ -163,13 +199,14 @@ void Config::readConfig(Graph* graph)
 
 	fileIn.close();
 
+	//Used to test if read-in is done properly
+/*
 	cout << algorithmName << endl;
 	cout << Queue_delay << endl;
 	cout << Propagation_delay << endl;
 	cout << Processing_delay << endl;
 	cout << Transmission_delay << endl;
-	cout << fileName << endl;
-
+*/
 	fileIn.open("graph.txt");
 
 	int numberOfNodes;
@@ -185,10 +222,8 @@ void Config::readConfig(Graph* graph)
 	for (int i = 0 ; i < numberOfNodes ; i++)
 	{
 		fileIn >> nodeNames;
-		cout << "lol" << endl;
-		graph->array[i].head->neighbor = nodeNames;
-		cout << "ded" << endl;
-		cout << graph->array[i].head->neighbor << endl;
+    	AdjacentListNode* newNode = nameAdjacentListNode(nodeNames);		
+		graph->array[i].headPtr = newNode;
 	}
 
 	while (!fileIn.eof())
@@ -197,36 +232,8 @@ void Config::readConfig(Graph* graph)
 		fileIn >> nodeEnd;
 		fileIn >> nodeDistance;
 		addEdge(graph, nodeStart, nodeEnd, nodeDistance);
-		cout << "fuck" << endl;
 	}
 
 	fileIn.close();
-
-}
-
-
-int main(){
-
-	Graph* graph;
-
-	Config Save;
-
-	Save.readConfig(graph);
-
-/*
-    // create the graph given in above fugure
-    int V = 5;
-    struct Graph* graph = createGraph(V);
-    addEdge(graph, 0, 1);
-    addEdge(graph, 0, 4);
-    addEdge(graph, 1, 2);
-    addEdge(graph, 1, 3);
-    addEdge(graph, 1, 4);
-    addEdge(graph, 2, 3);
-    addEdge(graph, 3, 4);
- 
-    // print the adjacency list representation of the above graph
-    printGraph(graph);
-*/
 
 }
