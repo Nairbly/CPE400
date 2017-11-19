@@ -1,0 +1,5 @@
+git add <file> <file> <file>
+git commit -m "<comment>"
+git push
+
+make pull request on github
