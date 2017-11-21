@@ -215,15 +215,7 @@ void Config::readConfig(Graph*& graph)
 
 	fileIn.close();
 
-	if (algorithmName == 'D')
-	{
-		fileIn.open("graph.txt");
-	}
-
-	else if (algorithmName == 'B')
-	{
-		fileIn.open("graphBMF.txt");
-	}
+	fileIn.open("graph.txt");
 
 	int numberOfNodes;
 	char nodeNames;
