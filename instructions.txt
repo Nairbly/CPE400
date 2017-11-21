@@ -3,7 +3,7 @@ First set-up:
 $ sudo apt install git
 $ git init
 $ git pull <link to repo> - used to update files
-$ git clone <link to repo> - used to pull entire folder
+$ git clone <link to repo> - used to pull entire folder if not your repo?
 
 --------------------------------------------------------
 
