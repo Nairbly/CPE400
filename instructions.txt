@@ -1,7 +1,20 @@
+First set-up:
+
+$ sudo apt install git
+$ git init
+$ git pull <link to repo> - used to update files
+$ git clone <link to repo> - used to pull entire folder if not your repo?
+
+--------------------------------------------------------
+
 git add <file> <file> <file>
 git commit -m "<comment>"
-git push
+git push OR git push -f origin master
+
+-f indicates a force
 
 make pull request on github
 
 git pull - this is used to download updated files
+
+git clone https://github.com/<user>/<repo>

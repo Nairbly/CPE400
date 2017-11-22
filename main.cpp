@@ -69,8 +69,8 @@ int main(){
 
     printGraph(graph);
 
-    //bellmanFord(graph, graph->array[0].headPtr->nodeName);
     Dijkstra(graph, 'u', 'z');
+    bellmanFord(graph, graph->array[0].headPtr->nodeName);
 
 }
 
@@ -446,7 +446,5 @@ void Dijkstra(Graph* graph, char start, char finish)
 	//cout << "starting from " << pointer->nodeName << ": shortest node is " << minNode << endl;
 	
 	//takes smallest route to finish
-
-
 
 }
