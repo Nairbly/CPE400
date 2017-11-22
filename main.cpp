@@ -56,6 +56,7 @@ void addEdge(struct Graph*&, char, char, int);
 void printGraph(struct Graph*);
 void bellmanFord(Graph*, char);
 void printBellmanFord(int[], char[], int);
+void Dijkstra(Graph*, char, char);
 
 //Main driver
 int main(){
@@ -68,6 +69,7 @@ int main(){
 
     printGraph(graph);
 
+    Dijkstra(graph, 'u', 'z');
     bellmanFord(graph, graph->array[0].headPtr->nodeName);
 
 }
@@ -341,5 +343,108 @@ void printBellmanFord(int dist[], char sourceNodes[], int vertices){
 	{
 		cout << sourceNodes[i] << "         " << dist[i] << endl;
 	}
+
+}
+
+void Dijkstra(Graph* graph, char start, char finish)
+{
+	/* -------------------------- OVERHEAD ---------------------------*/
+	//needs forwarding table, saving smallest path cost to get to node
+
+	char point;
+	AdjacentListNode* pointer;
+	int size = graph->numberOfVertices;
+	int distanceTraveled = 0;
+
+	char heads[size];
+	int dist[size];
+	bool sptSet[size];
+	int min = 1000, min_index;
+	char minNode;
+
+	//initialize arrays
+	for (int i = 0; i < size; ++i)
+	{
+		dist[i] = 1000;
+		sptSet[i] = 0;
+	}
+
+	for (int i = 0; i < size; ++i)
+	{
+		//set each value to "infinity" until set
+		point = graph->array[i].headPtr->nodeName;
+		heads[i] = point;
+		if (point == start)
+		{
+			pointer = graph->array[i].headPtr;
+			dist[i] = 0;
+			sptSet[i] = 1;
+		}
+	}
+	AdjacentListNode* move;
+
+	//searches until entire graph is known
+
+	for (int j = 0; j < size; ++j)
+	{
+		//set move to head's next
+		move = pointer;
+		cout << "Evaluating at node: " << move->nodeName << endl;
+		//start doing stuff
+
+		min = 1000;
+		//move = move->next;
+		while(move != NULL)
+		{
+			if (min > move->distance)
+			{	
+				min = move->distance;
+				minNode = move->neighbor;
+				for (int i = 0; i < size; ++i)
+				{
+					if (minNode == heads[i] && min < dist[i] && sptSet[i] == 0)
+					{
+						dist[i] = min + distanceTraveled;
+					}
+					else if (minNode == heads[i] && min < dist[i])
+					{
+						cout << "min: " << min << endl << "diststance traveled " << distanceTraveled << endl;
+						cout << "setting " << heads[i] << " current distance of " << dist[i] << " to ";
+						dist[i] = min + distanceTraveled;
+						cout << dist[i] << endl;
+					}
+				}
+			}
+			move = move->next;
+			min = 1000;
+		}
+
+		//end doing stuff
+		for (int i = 0; i < size; ++i)
+		{
+			if (min > dist[i] && dist[i] != 0 && sptSet[i] != 1)
+			{
+				min = dist[i];
+				min_index = i;
+				sptSet[i] = 1;
+				distanceTraveled = min;
+			}
+		}
+		pointer = graph->array[min_index].headPtr;
+		distanceTraveled = dist[min_index];
+		//cout << pointer->nodeName << " ffff" << endl;
+
+
+		for (int i = 0; i < size; ++i)
+		{
+			cout << heads[i] << " " << dist[i] << endl;
+		}
+
+	}
+
+
+	//cout << "starting from " << pointer->nodeName << ": shortest node is " << minNode << endl;
+	
+	//takes smallest route to finish
 
 }
